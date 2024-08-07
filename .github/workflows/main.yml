@@ -1,0 +1,31 @@
+name: Use Private Action
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  use-private-action:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up GitHub token
+        run: echo "${{ secrets.GH_PAT }}" > ~/.github_pat
+
+      - name: Use private action
+        uses: genkeydev/github-actions-maven-release@master
+        with:
+          # Add any inputs required by your action
+          release-branch-name: 'main'
+          gpg-enabled: false
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          git-release-bot-name: 'release-bot'
+          git-release-bot-email: 'release-bot@github.com'
+          maven-project-folder: './'
+          maven-args: '-DskipTests=true'
+          # Add other environment variables if needed
